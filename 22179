@@ -1,0 +1,274 @@
+CREATE TABLE [Guests] (
+  [GuestID] INT NOT NULL,
+  [FirstName] VARCHAR(50),
+  [LastName] VARCHAR(50),
+  [Address] VARCHAR(50),
+  [Phone] INT NOT NULL,
+  [Gender] VARCHAR(50),
+  PRIMARY KEY ([GuestID])
+);
+
+CREATE TABLE [Services] (
+  [ServicesID] INT NOT NULL,
+  [GuestID] INT NOT NULL,
+  [TotalPrice] INT NOT NULL,
+  [Complain] VARCHAR(50),
+  [RoomID] INT NOT NULL,
+  [Date] DATE NOT NULL,
+  PRIMARY KEY ([ServicesID])
+);
+
+CREATE INDEX [FK] ON  [Services] ([GuestID], [Complain], [RoomID]);
+
+CREATE TABLE [Managers] (
+  [ManagerID] INT NOT NULL,
+  [FirstName] VARCHAR(50),
+  [LastName] VARCHAR(50),
+  [PhoneNO] INT NOT NULL,
+  [Location] VARCHAR(50),
+  PRIMARY KEY ([ManagerID])
+);
+
+CREATE TABLE [Rooms] (
+  [RoomID] INT NOT NULL,
+  [RoomLocation] VARCHAR(50),
+  [Ready] VARCHAR(50),
+  [Description] VARCHAR(50),
+  [Price] INT NOT NULL,
+  [Type] VARCHAR(50),
+  PRIMARY KEY ([RoomID])
+);
+
+CREATE TABLE [Complains] (
+  [ComplainID] INT NOT NULL,
+  [GuestID] INT NOT NULL,
+  [Date] DATE NOT NULL,
+  [RoomID] INT NOT NULL,
+  [ManagerID] INT NOT NULL,
+  [ServiceID] INT NOT NULL,
+  PRIMARY KEY ([ComplainID])
+);
+
+CREATE INDEX [FK] ON  [Complains] ([GuestID], [RoomID], [ManagerID], [ServiceID]);
+
+
+
+1* how to Return the average value for the "Price" column in the "Rooms" table?
+
+SELECT AVG(Price) AS AveragePrice FROM Rooms;
+-----
+2* Find the price of the most expensive Room in the "Rooms" table?
+
+SELECT MAX(Price) AS LargestPrice FROM Rooms;
+
+-----
+3*Find the price of the cheapest Room in the "Rooms" table?
+
+SELECT MIN(Price) AS SmallestPrice FROM Rooms;
+
+-----
+4*Return the sum of the "Quantity" field in the "Rooms" table?
+
+SELECT SUM(Quantity) AS TotalItemsOrdered FROM Rooms;
+
+-----
+5*Return the day of the month for a date?
+
+SELECT DAY('2017/08/25') AS Date;
+--------
+6* Write an SQL query to print details for Managers with the first name as “Vipul” and “Satish” from Managers table.?
+
+Select * from Managers where FIRST_NAME in ('Vipul','Satish');
+ 
+------------
+7*  Write an SQL query to print details of Guest excluding last names, “Vipul” and “Satish” from Patients table.?
+
+Select * from Guests where LAST_NAME not in ('Vipul','Satish');
+
+
+---------
+
+8* Write an SQL query to show only odd rows from a table.??
+
+SELECT * FROM Guests WHERE MOD (Guest_ID, 2) <> 0;
+
+----------
+9* Write an SQL query to show only even rows from a table.??
+
+SELECT * FROM Guests WHERE MOD (Guest_ID, 2) = 0;
+---------
+10* Write an SQL query to clone a new table from another table.?
+
+SELECT * INTO GuestClone FROM Guests;
+SELECT * INTO GuestClone FROM Guests WHERE 1 = 0;
+CREATE TABLE GuestClone LIKE Guests;
+
+-------------
+
+11* Write an SQL query to fetch intersecting records of two tables?
+(SELECT * FROM Guests)
+INTERSECT
+(SELECT * FROM GuestClone);
+-------------
+12*  Write an SQL query to show the second highest Price from a table.?
+
+Select max(Price) from Rooms 
+where Price not in (Select max(Price) from Rooms);
+----------
+13* Write an SQL query to show one row twice in results from a table.?
+
+select FIRST_NAME, Location from worker W where W.Managers='alex' 
+union all 
+select FIRST_NAME, Location from Worker W1 where W1.Location='Cairo';
+
+---------
+14* Write an SQL query to fetch intersecting records of two tables.?
+
+(SELECT * FROM Guests)
+INTERSECT
+(SELECT * FROM GuestClone);
+--------
+15* Write an SQL query to show the last record from a table?
+
+Select * from Patients where Guest_ID = (SELECT max(Guest_ID) from Guests);
+----------
+16*  Write an SQL query to show the second highest Price from a table.?
+
+Select max(Price) from Rooms 
+where Price not in (Select max(Price) from Rooms);
+----------
+17* Write an SQL query to show one row twice in results from a table.?
+
+select FIRST_NAME, DEPARTMENT from worker W where W.DEPARTMENT='HR' 
+union all 
+select FIRST_NAME, DEPARTMENT from Worker W1 where W1.DEPARTMENT='HR';
+-------
+18* Write an SQL query to find the position of the alphabet (‘a’) in the first name column ‘Amitabh’ from Guest table.?
+
+Select INSTR(FIRST_NAME, BINARY'a') from Guests where FIRST_NAME = 'Amitabh';
+
+--------
+19* Write an SQL query to print the FIRST_NAME from Managers table after removing white spaces from the right side.?
+
+Select RTRIM(FIRST_NAME) from Managers;
+--------
+20* Write an SQL query that fetches the unique values of Guests from Worker table and prints its length?
+
+Select distinct length('Guests' ) from Guests;
+
+
+
+			select statments
+
+-- 6 insert statment
+
+INSERT INTO Managers VALUES(1,'Lotfy ','shawky',012222,Alex);
+INSERT INTO Managers VALUES(2,'Saad','fathy',034440,CAIRO);
+INSERT INTO Managers VALUES(3,'Tarek','omar',012255,CAIRO);
+INSERT INTO Rooms VALUES(1,'1st floor',ready,'Descrip',
+33 L.E,1 bed);
+INSERT INTO Rooms VALUES(2,'2sdfloor',notready,'Descrip' 
+,100L.E,2 bed);
+
+
+
+
+
+
+-- 3 select using subquery
+
+
+SELECT * 
+   FROM Guests 
+   WHERE GuestID IN (SELECT GuestID
+         FROM Guests 
+         WHERE GuestID = 1) ;
+
+SELECT * 
+   FROM Managers 
+   WHERE ManagerID IN (SELECT ManagerID
+         FROM Managers 
+         WHERE ManagerID = 1) ;
+
+SELECT * 
+   FROM Rooms 
+   WHERE Price IN (SELECT Price
+         FROM Rooms 
+         WHERE Price = '210 L.E') ;
+
+
+
+
+
+
+
+-- 2 select statments using count and group functions
+
+SELECT GuestID, COUNT(*)  'count'
+FROM Guests 
+GROUP BY GuestID;
+
+SELECT FirstName, COUNT(*) 'count'
+FROM Managers 
+GROUP BY Managers;
+
+
+
+
+
+
+-- 5 update statments
+
+UPDATE Managers
+SET FirstName = 'reno'
+WHERE ManagerID = 1;
+
+UPDATE Managers
+SET LastName = 'kinakom'
+WHERE ManagerID = 2;
+
+UPDATE Managers
+SET PhoneNO = '01222222'
+WHERE ManagerID = 3;
+
+UPDATE Rooms
+SET Price = '200 L.E'
+WHERE RoomID = 1;
+
+UPDATE Rooms
+SET Ready = 'ready' 
+WHERE RoomID = 2;
+
+
+
+-- 5 select statements using different joins
+
+SELECT Managers.ManagerID, Manager.ManagerFirstName
+FROM Managers
+INNER JOIN Treat ON Managers.ManagerID=Managers.ManagerID;
+
+SELECT Managers.ManagerID, Managers.ManagerFirstName
+FROM Managers
+LEFT JOIN Book ON Managers.ManagerID=Managers.ManagerID;
+
+SELECT Guests.GuestID, Guest.GuestFirstName
+FROM Guests
+RIGHT JOIN Book ON Guests.GuestID=Guests.GuestID;
+
+SELECT Guests.GuestID, Guests.GuestFirstName
+FROM Guests
+FULL JOIN Book ON Guests.GuestID=Guests.GuestID;
+
+SELECT Room.RoomID, Room.RoomID
+FROM Rooms
+INNER JOIN Rooms ON Room.RoomID=Room.RoomID;
+
+
+
+-- 5 delete statments
+
+DELETE FROM Guests WHERE GuestID= 1;
+DELETE FROM Guests WHERE GuestID= 2;
+DELETE FROM Guests WHERE GuestID= 3;
+DELETE FROM Managers WHERE ManagerID= 1;
+DELETE FROM Managers WHERE ManagerID= 1;
